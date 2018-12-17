@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { PostMessage } from '../post.model';
 
 
 @Component({
@@ -7,14 +8,22 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./create-posts.component.scss']
 })
 export class CreatePostsComponent implements OnInit {
-  newPost = 'No content';
-  enteredValue = '';
+
+  enteredTitle = '';
+  enteredContent = '';
+  @Output() postCreated = new EventEmitter<PostMessage>(); // emitting from child comp to parent comp
 
   constructor() { }
 
   ngOnInit() { }
 
   onAddPost() {
-    this.newPost = this.enteredValue;
+    const post: PostMessage = {
+      title: this.enteredTitle,
+      content: this.enteredContent
+    };
+    this.postCreated.emit(post);
   }
+
+
 }
