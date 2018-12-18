@@ -12,7 +12,7 @@ import { HeaderComponent } from './header/header.component';
 import { PostListComponent } from './posts/post-list/post-list.component';
 import {
   MatInputModule, MatCardModule, MatButtonModule,
-  MatToolbarModule, MatExpansionModule
+  MatToolbarModule, MatExpansionModule, MatIconModule
 } from '@angular/material';
 
 @NgModule({
@@ -33,7 +33,8 @@ import {
     MatCardModule,
     MatButtonModule,
     MatToolbarModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -30,6 +30,7 @@ export class CreatePostsComponent implements OnInit {
     //  this.postCreated.emit(post);
     // !Communicating two component using inMemeoryService technqiue rather than @Input, @Output
     this._postsService.setPosts(post);
+    form.resetForm(); // clear the form filed value
 
   }
 
