@@ -1,6 +1,10 @@
 <!-- <router-outlet></router-outlet> -->
 <app-header></app-header>
 <main>
-  <app-create-posts (postCreated)="onPostAdded($event)"></app-create-posts>
-  <app-post-list [posts]="storedPosts"></app-post-list>
+    <!--  <app-create-posts (postCreated)="onPostAdded($event)"></app-create-posts>
+  <app-post-list [posts]="storedPosts"></app-post-list> -->
+
+    <!-- !component communication using in-memory service -->
+    <app-create-posts></app-create-posts>
+    <app-post-list></app-post-list>
 </main>

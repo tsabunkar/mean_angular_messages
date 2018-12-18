@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { PostMessage } from '../post.model';
 import { NgForm } from '@angular/forms';
+import { PostService } from '../post.service';
 
 
 @Component({
@@ -12,9 +13,9 @@ export class CreatePostsComponent implements OnInit {
 
   enteredTitle = '';
   enteredContent = '';
-  @Output() postCreated = new EventEmitter<PostMessage>(); // emitting from child comp to parent comp
+  // @Output() postCreated = new EventEmitter<PostMessage>(); // emitting from child comp to parent comp
 
-  constructor() { }
+  constructor(public _postsService: PostService) { }
 
   ngOnInit() { }
 
@@ -23,11 +24,12 @@ export class CreatePostsComponent implements OnInit {
       return;
     }
     const post: PostMessage = {
-
       title: form.value.titleName,
       content: form.value.contentName
     };
-    this.postCreated.emit(post);
+    //  this.postCreated.emit(post);
+    // !Communicating two component using inMemeoryService technqiue rather than @Input, @Output
+    this._postsService.setPosts(post);
 
   }
 
