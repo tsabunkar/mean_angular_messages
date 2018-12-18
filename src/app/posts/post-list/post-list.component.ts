@@ -18,7 +18,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   constructor(public _postsService: PostService) { }
 
   ngOnInit() {
-    this.posts = this._postsService.getPosts();
+    this._postsService.getPosts(); // triggering the event
     // here we r listing to event emittied bcoz- inMemeory service -> getPosts() we r copying immutable posts array soo
     // if it was mutable posts array then no need to subjects and this below subscription
     this.subsciption = this._postsService.getPostUpdatedEventListener()

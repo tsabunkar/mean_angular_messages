@@ -10,10 +10,14 @@ import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './header/header.component';
 import { PostListComponent } from './posts/post-list/post-list.component';
+import { HttpClientModule } from '@angular/common/http';
+
+
 import {
   MatInputModule, MatCardModule, MatButtonModule,
   MatToolbarModule, MatExpansionModule, MatIconModule
 } from '@angular/material';
+
 
 @NgModule({
   declarations: [
@@ -28,6 +32,7 @@ import {
     FormsModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     BrowserAnimationsModule,
+    HttpClientModule,
     // material module
     MatInputModule,
     MatCardModule,
