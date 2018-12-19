@@ -18,8 +18,10 @@ export class PostService {
     // so we should pass the copy of this posts variable - can be done using spread opeartor
     // return [...this.posts]; // passing the immutable posts array
     // !calling the node backend
-    this._http.get<{ message: string, posts: PostMessage[], status: number }>
-      ('http://localhost:3000/api/posts')
+    this._http
+      .get<{ message: string; posts: PostMessage[]; status: number }>(
+        'http://localhost:3000/api/posts'
+      )
       .subscribe(responseData => {
         this.posts = responseData.posts;
         this.postUpdatedEvent.next([...this.posts]);
@@ -27,8 +29,17 @@ export class PostService {
   }
 
   setPosts(post: PostMessage) {
-    this.posts.push(post);
-    this.postUpdatedEvent.next([...this.posts]); // emitting a event (which carries the copied posts array value)
+    this._http.post<{ message: string; posts: PostMessage; status: number }>(
+      'http://localhost:3000/api/posts', post
+    ).subscribe((respData) => {
+      console.log(respData.message);
+
+      this.posts.push(post);
+      this.postUpdatedEvent.next([...this.posts]); // emitting a event (which carries the copied posts array value)
+
+    });
+
+
   }
 
   getPostUpdatedEventListener() {
