@@ -85,9 +85,11 @@ export class PostService {
 
 
   getParticularPostFromId(idToFetchPost: string) {
-    return {
-      ...this.posts.find(post => post.id === idToFetchPost)
-    }; // return clone object
+    /*    return {
+         ...this.posts.find(post => post.id === idToFetchPost)
+       }; // return clone object */
+    // !instead of getting local posts array, we r fetching it from backend
+    return this._http.get<{ _id: string, title: string, content: string }>(`http://localhost:3000/api/posts/${idToFetchPost}`);
   }
 
   // !UPDATE
@@ -96,6 +98,20 @@ export class PostService {
     this._http.put(`http://localhost:3000/api/posts/${id}`, post)
       .subscribe((response) => {
         console.log(response);
+        // !posts array is cloned to new variable
+        const postsCloned = [...this.posts];
+        // !find Index of particular post which got updated
+        const oldPostIndex = postsCloned.findIndex(postMess => postMess.id === post.id); // find calls predicate once
+        // for each element of the array, in ascending order, until it finds one where predicate returns true. If such an element is found,
+        // findIndex immediately returns that element index. Otherwise, findIndex returns -1.
+
+        // !update the post which is edited to the clonePosts array
+        postsCloned[oldPostIndex] = post;
+
+        // !cloned posts array value is assigned to posts array
+        this.posts = postsCloned;
+        // !emitting event
+        this.postUpdatedEvent.next([...this.posts]);
       });
   }
 }

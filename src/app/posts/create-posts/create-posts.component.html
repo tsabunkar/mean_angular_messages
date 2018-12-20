@@ -3,8 +3,8 @@
   <form (submit)="onAddEditPost(postForm)" #postForm="ngForm">
     <mat-form-field>
       <!-- <input name="title" [(ngModel)]="enteredTitle" matInput type="text"> -->
-      <input name="titleName" 
-        [ngModel]="postObjEdited.title"
+      <input name="titleName"
+        [ngModel]="postObjEdited?.title"
         matInput type="text"
         placeholder="Post Title"
         required minlength="3"
@@ -13,10 +13,10 @@
     </mat-form-field>
     <mat-form-field>
       <!-- <textarea matInput cols="30" rows="2" [(ngModel)]="enteredContent" #postInput></textarea> -->
-      <textarea matInput cols="30" rows="2" 
-      name="contentName" 
-      placeholder="Post Content/Decription" 
-      [ngModel]="postObjEdited.content"
+      <textarea matInput cols="30" rows="2"
+      name="contentName"
+      placeholder="Post Content/Decription"
+      [ngModel]="postObjEdited?.content"
       required #postContent="ngModel">
       </textarea>
       <mat-error *ngIf="postContent.invalid">Please enter the post Content</mat-error>
