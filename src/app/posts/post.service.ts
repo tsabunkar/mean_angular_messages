@@ -44,11 +44,12 @@ export class PostService {
   }
 
   setPosts(post: PostMessage) {
-    this._http.post<{ message: string; posts: PostMessage; status: number }>(
+    this._http.post<{ message: string; posts: PostMessage; status: number, postIdCreatedByMongo: string }>(
       'http://localhost:3000/api/posts', post
     ).subscribe((respData) => {
       console.log(respData.message);
-
+      const postIdCreatedByMongodb = respData.postIdCreatedByMongo;
+      post.id = postIdCreatedByMongodb; // updating the id which is fetched from mongodb created id -> (_id)
       this.posts.push(post);
       this.postUpdatedEvent.next([...this.posts]); // emitting a event (which carries the copied posts array value)
 
@@ -70,6 +71,12 @@ export class PostService {
     )
       .subscribe(() => {
         console.log('Deleted');
+        // filter() -> allows us to return subset of the original array
+        const updatedPostsFiltered = this.posts.filter(
+          post => post.id !== postId
+        );
+        this.posts = updatedPostsFiltered;
+        this.postUpdatedEvent.next([...this.posts]); // Emitting an event to update all other posts
       });
   }
 }
