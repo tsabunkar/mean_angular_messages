@@ -14,6 +14,7 @@ export class PostService {
 
   constructor(private _http: HttpClient) { }
 
+  // !GETALL
   getPosts() {
     // return this.posts; // if we do like this, we are copying the reference type of posts varuable
     // so we should pass the copy of this posts variable - can be done using spread opeartor
@@ -43,7 +44,8 @@ export class PostService {
       });
   }
 
-  setPosts(post: PostMessage) {
+  // !POST
+  addPosts(post: PostMessage) {
     this._http.post<{ message: string; posts: PostMessage; status: number, postIdCreatedByMongo: string }>(
       'http://localhost:3000/api/posts', post
     ).subscribe((respData) => {
@@ -64,6 +66,7 @@ export class PostService {
     // asObservable() -> this method makes postUpdatedEvent (i.e Subject event ) as -> Observable<> type
   }
 
+  // !DELETE
   deletePost(postId: string) {
     console.log(postId);
     this._http.delete(
@@ -77,6 +80,22 @@ export class PostService {
         );
         this.posts = updatedPostsFiltered;
         this.postUpdatedEvent.next([...this.posts]); // Emitting an event to update all other posts
+      });
+  }
+
+
+  getParticularPostFromId(idToFetchPost: string) {
+    return {
+      ...this.posts.find(post => post.id === idToFetchPost)
+    }; // return clone object
+  }
+
+  // !UPDATE
+  editPostMessage(id: string, post: PostMessage) {
+    // const postMessageObject: PostMessage = { id, title, content };
+    this._http.put(`http://localhost:3000/api/posts/${id}`, post)
+      .subscribe((response) => {
+        console.log(response);
       });
   }
 }
