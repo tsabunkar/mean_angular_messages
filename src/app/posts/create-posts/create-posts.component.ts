@@ -3,7 +3,7 @@ import { PostMessage } from '../post.model';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { PostService } from '../post.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-
+import { mimeType } from './mime-type.validator';
 
 @Component({
   selector: 'app-create-posts',
@@ -20,6 +20,8 @@ export class CreatePostsComponent implements OnInit {
   postObjEdited: PostMessage;
   isProgressLoading = false;
   formGroup: FormGroup;
+  imagePreview: string | ArrayBuffer;
+  isFileUploaded = false;
 
   constructor(public _postsService: PostService,
     public activatedRoute: ActivatedRoute
@@ -33,6 +35,10 @@ export class CreatePostsComponent implements OnInit {
       }),
       'contentControl': new FormControl(null, {
         validators: [Validators.required]
+      }),
+      'imageControl': new FormControl(null, {
+        validators: [Validators.required],
+        asyncValidators: [mimeType] // since it is image uploading which is async operation, so angular provides asyncValidator
       })
     });
 
@@ -64,7 +70,7 @@ export class CreatePostsComponent implements OnInit {
 
 
               // !updating the form fields with required value (in Edit mode)
-              this.formGroup.setValue({
+              this.formGroup.setValue({ // will set values of all the formfileds/formcontrol
                 'titleControl': this.postObjEdited.title,
                 'contentControl': this.postObjEdited.content,
               });
@@ -109,5 +115,24 @@ export class CreatePostsComponent implements OnInit {
 
   }
 
+  onImagePicked(event: Event) {
+    // const fileUploaded = (<HTMLInputElement>event.target).files; // data-type convertion of event.target from any to (HTMLInputElement)
+    // !ALternate-way of above code
+    const fileUploaded = (event.target as HTMLInputElement).files[0]; // taking first file
+    this.formGroup.patchValue({ // will only set particular values of the formfileds/formcontrol
+      'imageControl': fileUploaded
+    });
+    this.formGroup.get('imageControl').updateValueAndValidity(); // !will inform angular that I have changed the value of particular
+    //  !formConrtol or formfiled, then angular should re-evalute that particular formFiled
+    console.log(this.formGroup);
+    const fileReader = new FileReader();
+    fileReader.onload = () => { // when loading of file is done, execute below code
+      this.imagePreview = fileReader.result; // async code
+      this.isFileUploaded = true;
+    };
+    // load the file
+    fileReader.readAsDataURL(fileUploaded);
+
+  }
 
 }
