@@ -16,3 +16,7 @@ mat-spinner {
 .mat-spinner::ng-deep circle {
   stroke: #000;
 }
+
+input[type="file"] {
+  visibility: hidden;
+}

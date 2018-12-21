@@ -1,16 +1,15 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { PostMessage } from '../post.model';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { PostService } from '../post.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 
-
 @Component({
-  selector: 'app-create-posts',
-  templateUrl: './create-posts.component.html',
+  selector: 'app-create-template-posts',
+  templateUrl: './create-posts-template.component.html',
   styleUrls: ['./create-posts.component.scss']
 })
-export class CreatePostsComponent implements OnInit {
+export class CreatePostsTemplateDrivenComponent implements OnInit {
 
   enteredTitle = '';
   enteredContent = '';
@@ -19,25 +18,12 @@ export class CreatePostsComponent implements OnInit {
   private idToUpdate: string;
   postObjEdited: PostMessage;
   isProgressLoading = false;
-  formGroup: FormGroup;
 
   constructor(public _postsService: PostService,
     public activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit() {
-
-    this.formGroup = new FormGroup({
-      'titleControl': new FormControl(null, {
-        validators: [Validators.required, Validators.minLength(3)]
-      }),
-      'contentControl': new FormControl(null, {
-        validators: [Validators.required]
-      })
-    });
-
-
-
     // if we have idToEdit paramter in the url then -> it is edit, else no such url paramter then it is create
     this.activatedRoute.paramMap.subscribe(
       // paramMap() is an -> observable bcoz the url in the browser can dynamically change
@@ -61,14 +47,6 @@ export class CreatePostsComponent implements OnInit {
                 title: postData['data'].title,
                 content: postData['data'].content,
               };
-
-
-              // !updating the form fields with required value (in Edit mode)
-              this.formGroup.setValue({
-                'titleControl': this.postObjEdited.title,
-                'contentControl': this.postObjEdited.content,
-              });
-
             });
         } else {
           console.log('create mode');
@@ -80,13 +58,13 @@ export class CreatePostsComponent implements OnInit {
 
   }
 
-  onAddEditPost() {
-    if (this.formGroup.invalid) {
+  onAddEditPost(form: NgForm) {
+    if (form.invalid) {
       return;
     }
     const post: PostMessage = {
-      title: this.formGroup.value.titleControl,
-      content: this.formGroup.value.contentControl
+      title: form.value.titleName,
+      content: form.value.contentName
     };
 
     // !Loading progress spinner
@@ -105,7 +83,7 @@ export class CreatePostsComponent implements OnInit {
     }
 
 
-    this.formGroup.reset(); // clear the form filed value
+    form.resetForm(); // clear the form filed value
 
   }
 

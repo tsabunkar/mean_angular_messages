@@ -1,29 +1,32 @@
-<!-- Template driven form -->
+<!-- Reactive form -->
 <mat-card>
   <mat-spinner *ngIf="isProgressLoading"></mat-spinner>
-  <form (submit)="onAddEditPost(postForm)" #postForm="ngForm" *ngIf="!isProgressLoading">
+  <form [formGroup]="formGroup" (submit)="onAddEditPost()" *ngIf="!isProgressLoading">
     <mat-form-field>
-      <!-- <input name="title" [(ngModel)]="enteredTitle" matInput type="text"> -->
-      <input name="titleName"
-        [ngModel]="postObjEdited?.title"
-        matInput type="text"
+      <input
+        name="titleName"
+        matInput
         placeholder="Post Title"
-        required minlength="3"
-        #postTitle="ngModel">
-      <mat-error *ngIf="postTitle.invalid">Please enter the title</mat-error>
+        formControlName="titleControl"
+        type="text">
+      <mat-error *ngIf="formGroup.get('titleControl').invalid">Please enter the title</mat-error>
     </mat-form-field>
     <mat-form-field>
-      <!-- <textarea matInput cols="30" rows="2" [(ngModel)]="enteredContent" #postInput></textarea> -->
-      <textarea matInput cols="30" rows="2"
-      name="contentName"
-      placeholder="Post Content/Decription"
-      [ngModel]="postObjEdited?.content"
-      required #postContent="ngModel">
-      </textarea>
-      <mat-error *ngIf="postContent.invalid">Please enter the post Content</mat-error>
+      <textarea
+        matInput
+        cols="30" rows="2"
+        name="contentName"
+        formControlName="contentControl"
+        placeholder="Post Content/Decription">
+        </textarea>
+      <mat-error *ngIf="formGroup.get('contentControl').invalid">Please enter the post Content</mat-error>
     </mat-form-field>
-
-    <button mat-raised-button color="primary" [disabled]="postForm.invalid" type="submit">Save Post</button>
+    <div>
+      <button mat-stroked-button type="button" (click)="filePicker.click()">Pick Image</button>
+      <input type="file" #filePicker>
+    </div>
+    <br>
+    <button mat-raised-button color="primary" [disabled]="formGroup.invalid" type="submit">Save Post</button>
   </form>
 
 </mat-card>

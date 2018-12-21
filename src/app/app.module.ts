@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { CreatePostsComponent } from './posts/create-posts/create-posts.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './header/header.component';
 import { PostListComponent } from './posts/post-list/post-list.component';
@@ -17,6 +17,7 @@ import {
   MatInputModule, MatCardModule, MatButtonModule,
   MatToolbarModule, MatExpansionModule, MatIconModule, MatProgressSpinnerModule
 } from '@angular/material';
+import { CreatePostsTemplateDrivenComponent } from './posts/create-posts/create-posts-template.component';
 
 
 @NgModule({
@@ -24,12 +25,14 @@ import {
     AppComponent,
     CreatePostsComponent,
     HeaderComponent,
-    PostListComponent
+    PostListComponent,
+    CreatePostsTemplateDrivenComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule,
+    FormsModule, // Template drive forms
+    ReactiveFormsModule, // Reactive forms
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     BrowserAnimationsModule,
     HttpClientModule,
