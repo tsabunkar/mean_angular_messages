@@ -14,16 +14,24 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   posts: PostMessage[] = [];
   private subsciption: Subscription;
+  isProgressLoading = false;
 
   constructor(public _postsService: PostService) { }
 
   ngOnInit() {
+
+    // !Loading progress spinner
+    this.isProgressLoading = true;
+
     this._postsService.getPosts(); // triggering the event
     // here we r listing to event emittied bcoz- inMemeory service -> getPosts() we r copying immutable posts array soo
     // if it was mutable posts array then no need to subjects and this below subscription
     this.subsciption = this._postsService.getPostUpdatedEventListener()
       .subscribe(
         (postsMessages: PostMessage[]) => {
+
+          // !Remove progress spinner
+          this.isProgressLoading = false;
           this.posts = postsMessages;
         }
       );

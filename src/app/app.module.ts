@@ -15,7 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import {
   MatInputModule, MatCardModule, MatButtonModule,
-  MatToolbarModule, MatExpansionModule, MatIconModule
+  MatToolbarModule, MatExpansionModule, MatIconModule, MatProgressSpinnerModule
 } from '@angular/material';
 
 
@@ -39,7 +39,8 @@ import {
     MatButtonModule,
     MatToolbarModule,
     MatExpansionModule,
-    MatIconModule
+    MatIconModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

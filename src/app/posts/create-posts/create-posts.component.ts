@@ -18,6 +18,7 @@ export class CreatePostsComponent implements OnInit {
   private mode = 'create';
   private idToUpdate: string;
   postObjEdited: PostMessage;
+  isProgressLoading = false;
 
   constructor(public _postsService: PostService,
     public activatedRoute: ActivatedRoute
@@ -32,9 +33,15 @@ export class CreatePostsComponent implements OnInit {
           console.log('edit mode');
           this.mode = 'edit';
           this.idToUpdate = paramMap.get('idToEdit');
+          // !Loading progress spinner
+          this.isProgressLoading = true;
+
           // this.postObjEdited = this._postsService.getParticularPostFromId(this.idToUpdate);
           this._postsService.getParticularPostFromId(this.idToUpdate)
             .subscribe(postData => {
+
+              // !Removing progress spinner, after fetching data from backend
+              this.isProgressLoading = false;
 
               this.postObjEdited = {
                 id: postData['data']._id,
@@ -60,6 +67,9 @@ export class CreatePostsComponent implements OnInit {
       title: form.value.titleName,
       content: form.value.contentName
     };
+
+    // !Loading progress spinner
+    this.isProgressLoading = true;
 
     if (this.mode === 'edit') { // edit mode
       console.log('executing edit post-message');

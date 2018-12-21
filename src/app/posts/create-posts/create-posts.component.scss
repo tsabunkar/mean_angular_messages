@@ -3,7 +3,16 @@
     margin: auto;
 }
  */
-mat-form-field, textarea {
-width: 100%;
+mat-form-field,
+textarea {
+  width: 100%;
 
+}
+
+mat-spinner {
+  margin: auto;
+}
+
+.mat-spinner::ng-deep circle {
+  stroke: #000;
 }

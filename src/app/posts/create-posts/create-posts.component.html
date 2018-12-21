@@ -1,6 +1,7 @@
 <!-- Template driven form -->
 <mat-card>
-  <form (submit)="onAddEditPost(postForm)" #postForm="ngForm">
+  <mat-spinner *ngIf="isProgressLoading"></mat-spinner>
+  <form (submit)="onAddEditPost(postForm)" #postForm="ngForm" *ngIf="!isProgressLoading">
     <mat-form-field>
       <!-- <input name="title" [(ngModel)]="enteredTitle" matInput type="text"> -->
       <input name="titleName"

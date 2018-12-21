@@ -3,6 +3,7 @@ import { PostMessage } from './post.model';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 // Regestring the service in the root level (i.e- AppModule). rather than providing in providers array
 // in app.module.ts as we used to do old techn
@@ -12,7 +13,9 @@ export class PostService {
   private posts: PostMessage[] = [];
   private postUpdatedEvent = new Subject<PostMessage[]>();
 
-  constructor(private _http: HttpClient) { }
+  constructor(private _http: HttpClient,
+    private _router: Router // used for navigation to other component
+  ) { }
 
   // !GETALL
   getPosts() {
@@ -54,7 +57,8 @@ export class PostService {
       post.id = postIdCreatedByMongodb; // updating the id which is fetched from mongodb created id -> (_id)
       this.posts.push(post);
       this.postUpdatedEvent.next([...this.posts]); // emitting a event (which carries the copied posts array value)
-
+      // after adding of post is done then navigate
+      this._router.navigate(['/']);
     });
 
 
@@ -112,6 +116,9 @@ export class PostService {
         this.posts = postsCloned;
         // !emitting event
         this.postUpdatedEvent.next([...this.posts]);
+
+        // after adding of post is done then navigate
+        this._router.navigate(['/']);
       });
   }
 }
