@@ -42,11 +42,11 @@ export class CreatePostsTemplateDrivenComponent implements OnInit {
               // !Removing progress spinner, after fetching data from backend
               this.isProgressLoading = false;
 
-              this.postObjEdited = {
-                id: postData['data']._id,
-                title: postData['data'].title,
-                content: postData['data'].content,
-              };
+              // this.postObjEdited = {
+              //   id: postData['data']._id,
+              //   title: postData['data'].title,
+              //   content: postData['data'].content,
+              // };
             });
         } else {
           console.log('create mode');
@@ -58,7 +58,7 @@ export class CreatePostsTemplateDrivenComponent implements OnInit {
 
   }
 
-  onAddEditPost(form: NgForm) {
+ /*  onAddEditPost(form: NgForm) {
     if (form.invalid) {
       return;
     }
@@ -79,13 +79,13 @@ export class CreatePostsTemplateDrivenComponent implements OnInit {
       console.log('executing add post-message');
       post.id = '';
       // !Communicating two component using inMemeoryService technqiue rather than @Input, @Output
-      this._postsService.addPosts(post);
+      // this._postsService.addPosts(post);
     }
 
 
     form.resetForm(); // clear the form filed value
 
-  }
+  } */
 
 
 }

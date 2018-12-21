@@ -66,6 +66,7 @@ export class CreatePostsComponent implements OnInit {
                 id: postData['data']._id,
                 title: postData['data'].title,
                 content: postData['data'].content,
+                imagePath: null
               };
 
 
@@ -92,22 +93,24 @@ export class CreatePostsComponent implements OnInit {
     }
     const post: PostMessage = {
       title: this.formGroup.value.titleControl,
-      content: this.formGroup.value.contentControl
+      content: this.formGroup.value.contentControl,
+      imagePath: null
     };
 
     // !Loading progress spinner
     this.isProgressLoading = true;
 
-    if (this.mode === 'edit') { // edit mode
+    if (this.mode === 'edit') { // !edit mode
       console.log('executing edit post-message');
       post.id = this.idToUpdate;
       this._postsService.editPostMessage(this.idToUpdate, post);
-    } else { // add mode
+    } else { // !add mode
       //  this.postCreated.emit(post);
       console.log('executing add post-message');
       post.id = '';
+
       // !Communicating two component using inMemeoryService technqiue rather than @Input, @Output
-      this._postsService.addPosts(post);
+      this._postsService.addPosts(post, this.formGroup.value.imageControl);
     }
 
 

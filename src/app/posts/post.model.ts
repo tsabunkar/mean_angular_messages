@@ -3,5 +3,6 @@ export interface PostMessage {
   title: string;
   content: string;
   id?: string;
+  imagePath: string;
 }
 

@@ -36,6 +36,7 @@ export class PostService {
                 title: posts.title,
                 id: posts._id, // mapping _id (of db) --to--> id property in frontend
                 content: posts.content,
+                imagePath: posts.imagePath
               };
 
             });
@@ -48,15 +49,37 @@ export class PostService {
   }
 
   // !POST
-  addPosts(post: PostMessage) {
-    this._http.post<{ message: string; posts: PostMessage; status: number, postIdCreatedByMongo: string }>(
-      'http://localhost:3000/api/posts', post
+  addPosts(postMess: PostMessage, image: File) {
+
+    const postData = new FormData();
+    postData.append('title', postMess.title);
+    postData.append('content', postMess.content);
+    postData.append('imageProp', image, postMess.title);
+
+    this._http.post<{ message: string; posts: PostMessage; status: number, postIdCreatedByMongo: string, postObject: PostMessage }>(
+      'http://localhost:3000/api/posts', postData
     ).subscribe((respData) => {
       console.log(respData.message);
-      const postIdCreatedByMongodb = respData.postIdCreatedByMongo;
-      post.id = postIdCreatedByMongodb; // updating the id which is fetched from mongodb created id -> (_id)
-      this.posts.push(post);
+
+
+      /* const postMessObj: PostMessage = {
+        id: respData.postIdCreatedByMongo,  // updating the id which is fetched from mongodb created id -> (_id)
+        title: postMess.title,
+        content: postMess.content
+      }; */
+
+      // !Alternative of above code
+      const postMessObj: PostMessage = {
+        ...postMess,
+        id: respData.postIdCreatedByMongo, // updating the id which is fetched from mongodb created id -> (_id)
+      };
+
+      // const postIdCreatedByMongodb = respData.postIdCreatedByMongo;
+      // post.id = postIdCreatedByMongodb; // updating the id which is fetched from mongodb created id -> (_id)
+
+      this.posts.push(postMessObj);
       this.postUpdatedEvent.next([...this.posts]); // emitting a event (which carries the copied posts array value)
+
       // after adding of post is done then navigate
       this._router.navigate(['/']);
     });
