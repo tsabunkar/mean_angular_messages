@@ -116,24 +116,46 @@ export class PostService {
          ...this.posts.find(post => post.id === idToFetchPost)
        }; // return clone object */
     // !instead of getting local posts array, we r fetching it from backend
-    return this._http.get<{ _id: string, title: string, content: string }>(`http://localhost:3000/api/posts/${idToFetchPost}`);
+    return this._http.get<{ _id: string, title: string, content: string, imagePath: string }>
+      (`http://localhost:3000/api/posts/${idToFetchPost}`);
   }
 
   // !UPDATE
-  editPostMessage(id: string, post: PostMessage) {
+  editPostMessage(id: string, post: PostMessage, image: File | string) {
+
+    let postData: PostMessage | FormData;
+    if (typeof (image) === 'object') { // image is file, then send formData
+      postData = new FormData();
+      postData.append('id', post.id);
+      postData.append('title', post.title);
+      postData.append('content', post.content);
+      postData.append('imageProp', image, post.title);
+    } else { // image is string, then send json data
+      postData = {
+        ...post,
+        imagePath: image
+      };
+    }
+
+
     // const postMessageObject: PostMessage = { id, title, content };
-    this._http.put(`http://localhost:3000/api/posts/${id}`, post)
+    this._http.put(`http://localhost:3000/api/posts/${id}`, postData)
       .subscribe((response) => {
         console.log(response);
         // !posts array is cloned to new variable
         const postsCloned = [...this.posts];
         // !find Index of particular post which got updated
-        const oldPostIndex = postsCloned.findIndex(postMess => postMess.id === post.id); // find calls predicate once
+        const oldPostIndex = postsCloned.findIndex(postMess => postMess.id === id); // find calls predicate once
         // for each element of the array, in ascending order, until it finds one where predicate returns true. If such an element is found,
         // findIndex immediately returns that element index. Otherwise, findIndex returns -1.
 
+        const postMessage: PostMessage = {
+          ...post,
+          imagePath: ''
+        };
+
         // !update the post which is edited to the clonePosts array
-        postsCloned[oldPostIndex] = post;
+        postsCloned[oldPostIndex] = postMessage;
 
         // !cloned posts array value is assigned to posts array
         this.posts = postsCloned;

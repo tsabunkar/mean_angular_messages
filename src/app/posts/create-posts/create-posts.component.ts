@@ -66,7 +66,7 @@ export class CreatePostsComponent implements OnInit {
                 id: postData['data']._id,
                 title: postData['data'].title,
                 content: postData['data'].content,
-                imagePath: null
+                imagePath: postData['data'].imagePath
               };
 
 
@@ -74,6 +74,7 @@ export class CreatePostsComponent implements OnInit {
               this.formGroup.setValue({ // will set values of all the formfileds/formcontrol
                 'titleControl': this.postObjEdited.title,
                 'contentControl': this.postObjEdited.content,
+                'imageControl': this.postObjEdited.imagePath
               });
 
             });
@@ -103,7 +104,7 @@ export class CreatePostsComponent implements OnInit {
     if (this.mode === 'edit') { // !edit mode
       console.log('executing edit post-message');
       post.id = this.idToUpdate;
-      this._postsService.editPostMessage(this.idToUpdate, post);
+      this._postsService.editPostMessage(this.idToUpdate, post, this.formGroup.value.imageControl);
     } else { // !add mode
       //  this.postCreated.emit(post);
       console.log('executing add post-message');

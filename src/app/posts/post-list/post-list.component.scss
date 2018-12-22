@@ -17,3 +17,12 @@ mat-spinner {
 .mat-spinner::ng-deep circle {
   stroke: orange;
 }
+
+.post-image {
+  width: 100%;
+}
+
+.post-image img {
+  width: 100%;
+  box-shadow: 1px 1px 5px rgba($color: #000000, $alpha: 1.0)
+}
