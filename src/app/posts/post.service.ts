@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { PostMessage } from './post.model';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 // Regestring the service in the root level (i.e- AppModule). rather than providing in providers array
@@ -11,25 +11,35 @@ import { Router } from '@angular/router';
 export class PostService {
   // !Creating In-Memery service to interact b/w creat-posts and post-list component
   private posts: PostMessage[] = [];
-  private postUpdatedEvent = new Subject<PostMessage[]>();
+  private postUpdatedEvent = new Subject<{ posts: PostMessage[], totalRecordCount: number }>();
 
   constructor(private _http: HttpClient,
     private _router: Router // used for navigation to other component
   ) { }
 
   // !GETALL
-  getPosts() {
+  getPosts(itemsPerPage: number, currentPage: number) {
+    let totalNumberOfRecords;
+    const querParams = `?pageSize=${itemsPerPage}&currentPage=${currentPage}`;
     // return this.posts; // if we do like this, we are copying the reference type of posts varuable
     // so we should pass the copy of this posts variable - can be done using spread opeartor
     // return [...this.posts]; // passing the immutable posts array
     // !calling the node backend
     this._http
-      .get<{ message: string; posts: any; status: number }>(
-        'http://localhost:3000/api/posts'
+      // .get<{ message: string; posts: any; status: number }>(
+      .get<Response>(
+        'http://localhost:3000/api/posts' + querParams, { observe: 'response' }
       )
       .pipe(
+        // !NOTE- below postData ->is value which we recieved from backend but we have wrapped the
+        // ! recived response in the Repsonse(Data-type) i.e-> .get<Response>(
         map((postData) => {  // map() -> rxjs map operator
-          return postData.posts
+
+          // !fetching value of custom-key from header's response
+          totalNumberOfRecords = +postData.headers.get('max-records');
+
+          const postMessagesBody = postData.body['posts'];
+          return postMessagesBody
             .map(posts => {// map() is js function
 
               return {
@@ -42,10 +52,16 @@ export class PostService {
             });
         })
       )
-      .subscribe(transformedPost => {
+      .subscribe((transformedPost) => {
+
         this.posts = transformedPost;
-        this.postUpdatedEvent.next([...this.posts]);
+        this.postUpdatedEvent.next({
+          posts: [...this.posts],
+          totalRecordCount: totalNumberOfRecords
+        });
       });
+
+
   }
 
   // !POST
@@ -61,24 +77,17 @@ export class PostService {
     ).subscribe((respData) => {
       console.log(respData.message);
 
+      /*       const postMessObj: PostMessage = {
+              ...postMess,
+              id: respData.postIdCreatedByMongo, // updating the id which is fetched from mongodb created id -> (_id)
+            };
 
-      /* const postMessObj: PostMessage = {
-        id: respData.postIdCreatedByMongo,  // updating the id which is fetched from mongodb created id -> (_id)
-        title: postMess.title,
-        content: postMess.content
-      }; */
+            // const postIdCreatedByMongodb = respData.postIdCreatedByMongo;
+            // post.id = postIdCreatedByMongodb; // updating the id which is fetched from mongodb created id -> (_id)
 
-      // !Alternative of above code
-      const postMessObj: PostMessage = {
-        ...postMess,
-        id: respData.postIdCreatedByMongo, // updating the id which is fetched from mongodb created id -> (_id)
-      };
-
-      // const postIdCreatedByMongodb = respData.postIdCreatedByMongo;
-      // post.id = postIdCreatedByMongodb; // updating the id which is fetched from mongodb created id -> (_id)
-
-      this.posts.push(postMessObj);
-      this.postUpdatedEvent.next([...this.posts]); // emitting a event (which carries the copied posts array value)
+            this.posts.push(postMessObj);
+            this.postUpdatedEvent.next([...this.posts]); // emitting a event (which carries the copied posts array value)
+       */
 
       // after adding of post is done then navigate
       this._router.navigate(['/']);
@@ -96,21 +105,21 @@ export class PostService {
   // !DELETE
   deletePost(postId: string) {
     console.log(postId);
-    this._http.delete(
+    return this._http.delete(
       `http://localhost:3000/api/posts/${postId}`
-    )
-      .subscribe(() => {
-        console.log('Deleted');
-        // filter() -> allows us to return subset of the original array
-        const updatedPostsFiltered = this.posts.filter(
-          post => post.id !== postId
-        );
-        this.posts = updatedPostsFiltered;
-        this.postUpdatedEvent.next([...this.posts]); // Emitting an event to update all other posts
-      });
+    );
+    /*  .subscribe(() => {
+       console.log('Deleted');
+       // filter() -> allows us to return subset of the original array
+       const updatedPostsFiltered = this.posts.filter(
+         post => post.id !== postId
+       );
+       this.posts = updatedPostsFiltered;
+       this.postUpdatedEvent.next([...this.posts]); // Emitting an event to update all other posts
+     }); */
   }
 
-
+  // !GET
   getParticularPostFromId(idToFetchPost: string) {
     /*    return {
          ...this.posts.find(post => post.id === idToFetchPost)
@@ -142,25 +151,29 @@ export class PostService {
     this._http.put(`http://localhost:3000/api/posts/${id}`, postData)
       .subscribe((response) => {
         console.log(response);
-        // !posts array is cloned to new variable
-        const postsCloned = [...this.posts];
-        // !find Index of particular post which got updated
-        const oldPostIndex = postsCloned.findIndex(postMess => postMess.id === id); // find calls predicate once
-        // for each element of the array, in ascending order, until it finds one where predicate returns true. If such an element is found,
-        // findIndex immediately returns that element index. Otherwise, findIndex returns -1.
 
-        const postMessage: PostMessage = {
-          ...post,
-          imagePath: ''
-        };
+        /*
+                // !posts array is cloned to new variable
+                const postsCloned = [...this.posts];
+                // !find Index of particular post which got updated
+                const oldPostIndex = postsCloned.findIndex(postMess => postMess.id === id); // find calls predicate once
+                // for each element of the array, in ascending order, until it finds one where predicate returns true. If such an element
+                // is found, findIndex immediately returns that element index. Otherwise, findIndex returns -1.
 
-        // !update the post which is edited to the clonePosts array
-        postsCloned[oldPostIndex] = postMessage;
+                const postMessage: PostMessage = {
+                  ...post,
+                  imagePath: ''
+                };
 
-        // !cloned posts array value is assigned to posts array
-        this.posts = postsCloned;
-        // !emitting event
-        this.postUpdatedEvent.next([...this.posts]);
+                // !update the post which is edited to the clonePosts array
+                postsCloned[oldPostIndex] = postMessage;
+
+                // !cloned posts array value is assigned to posts array
+                this.posts = postsCloned;
+                // !emitting event
+                this.postUpdatedEvent.next([...this.posts]);
+         */
+
 
         // after adding of post is done then navigate
         this._router.navigate(['/']);

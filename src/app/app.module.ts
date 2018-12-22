@@ -15,7 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import {
   MatInputModule, MatCardModule, MatButtonModule,
-  MatToolbarModule, MatExpansionModule, MatIconModule, MatProgressSpinnerModule
+  MatToolbarModule, MatExpansionModule, MatIconModule, MatProgressSpinnerModule, MatPaginatorModule
 } from '@angular/material';
 import { CreatePostsTemplateDrivenComponent } from './posts/create-posts/create-posts-template.component';
 
@@ -43,7 +43,8 @@ import { CreatePostsTemplateDrivenComponent } from './posts/create-posts/create-
     MatToolbarModule,
     MatExpansionModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatPaginatorModule
   ],
   providers: [],
   bootstrap: [AppComponent]

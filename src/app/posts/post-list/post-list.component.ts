@@ -2,6 +2,7 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { PostMessage } from '../post.model';
 import { PostService } from '../post.service';
 import { Subscription } from 'rxjs';
+import { PageEvent } from '@angular/material';
 
 @Component({
   selector: 'app-post-list',
@@ -15,6 +16,10 @@ export class PostListComponent implements OnInit, OnDestroy {
   posts: PostMessage[] = [];
   private subsciption: Subscription;
   isProgressLoading = false;
+  totalRecords = 0; // total number of item/records in db
+  itemsPerPage = 2; // how many items we want to show on a given page
+  pageSizeOptions = [1, 2, 5, 10];
+  currentPage = 1; // user is in first page when this component in initiated
 
   constructor(public _postsService: PostService) { }
 
@@ -23,23 +28,37 @@ export class PostListComponent implements OnInit, OnDestroy {
     // !Loading progress spinner
     this.isProgressLoading = true;
 
-    this._postsService.getPosts(); // triggering the event
+    this._postsService.getPosts(this.itemsPerPage, this.currentPage); // triggering the event
     // here we r listing to event emittied bcoz- inMemeory service -> getPosts() we r copying immutable posts array soo
     // if it was mutable posts array then no need to subjects and this below subscription
     this.subsciption = this._postsService.getPostUpdatedEventListener()
       .subscribe(
-        (postsMessages: PostMessage[]) => {
+        (postsData: { posts: PostMessage[], totalRecordCount: number }) => {
 
           // !Remove progress spinner
           this.isProgressLoading = false;
-          this.posts = postsMessages;
+          this.posts = postsData.posts;
+          this.totalRecords = postsData.totalRecordCount;
         }
       );
   }
 
   onDelete(postId: string) {
     console.log(postId);
-    this._postsService.deletePost(postId);
+    // !loading progress spinner
+    this.isProgressLoading = true;
+    this._postsService.deletePost(postId)
+      .subscribe(() => {
+        this._postsService.getPosts(this.itemsPerPage, this.currentPage);
+      });
+  }
+
+  onChangedPage(pageData: PageEvent) { // PageEvent -> Object holding-data about the current page
+    // !Loading progress spinner
+    this.isProgressLoading = true;
+    this.currentPage = pageData.pageIndex + 1; // pageIndex -> start with 0, so +1
+    this.itemsPerPage = pageData.pageSize;
+    this._postsService.getPosts(this.itemsPerPage, this.currentPage);
   }
 
   ngOnDestroy() {
