@@ -18,6 +18,8 @@ import {
   MatToolbarModule, MatExpansionModule, MatIconModule, MatProgressSpinnerModule, MatPaginatorModule
 } from '@angular/material';
 import { CreatePostsTemplateDrivenComponent } from './posts/create-posts/create-posts-template.component';
+import { SignupComponent } from './auth/signup/signup.component';
+import { SigninComponent } from './auth/signin/signin.component';
 
 
 @NgModule({
@@ -26,7 +28,9 @@ import { CreatePostsTemplateDrivenComponent } from './posts/create-posts/create-
     CreatePostsComponent,
     HeaderComponent,
     PostListComponent,
-    CreatePostsTemplateDrivenComponent
+    CreatePostsTemplateDrivenComponent,
+    SigninComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,

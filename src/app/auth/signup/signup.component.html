@@ -1,0 +1,20 @@
+<!-- Template-driven form -->
+<b>Welcome to Singup/Register</b>
+<mat-card>
+  <mat-spinner *ngIf="isProgressLoading"></mat-spinner>
+  <form (submit)="onSignUp(signupForm)" #signupForm="ngForm" *ngIf="!isProgressLoading">
+    <mat-form-field>
+      <input matInput name="email" ngModel autocomplete="email" placeholder="E-Mail" type="email" #emailInput="ngModel"
+        required email>
+      <mat-error *ngIf="emailInput.invalid">Please enter the valid email</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput name="password" ngModel autocomplete="current-password" placeholder="Password" type="password"
+        #passwordInput="ngModel" required>
+      <mat-error *ngIf="passwordInput.invalid">Please enter the valid password</mat-error>
+    </mat-form-field>
+    <br>
+    <button mat-raised-button color="primary" [disabled]="signupForm.invalid" type="submit">Login</button>
+  </form>
+
+</mat-card>

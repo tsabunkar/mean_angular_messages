@@ -48,7 +48,11 @@ export const mimeType = (control: AbstractControl)
         }
         observer.complete(); // creation of observable is done
       });
+      console.log('file', file);
+      // if (file) {
       fileReader.readAsArrayBuffer(file); // reading the file
+      // }
+
     }
   );
   return fileReaderObservable;
