@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  // !interceptor of request which is leaving from frontend to backend
+  // !interceptor of outgoing-request which is leaving from frontend to backend
 
   constructor(private _authService: AuthService) { }
 

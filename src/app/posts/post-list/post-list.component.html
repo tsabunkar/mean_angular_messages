@@ -9,9 +9,10 @@
     </div>
     <p> {{item.content}}</p>
 
-    <mat-action-row>
-      <a *ngIf="(isUserAuthenticated | async) && userId === item._creator" mat-button color="primary" [routerLink]="['/edit',item.id]">EDIT</a>
-      <button *ngIf="(isUserAuthenticated | async) && userId === item._creator" mat-button color="warn" (click)="onDelete(item.id)">DELETE</button>
+    <mat-action-row *ngIf="(isUserAuthenticated | async) && userId === item._creator">
+    <!-- <mat-action-row *ngIf="(isUserAuthenticated | async)"> -->
+      <a mat-button color="primary" [routerLink]="['/edit',item.id]">EDIT</a>
+      <button mat-button color="warn" (click)="onDelete(item.id)">DELETE</button>
     </mat-action-row>
 
   </mat-expansion-panel>

@@ -15,12 +15,14 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import {
   MatInputModule, MatCardModule, MatButtonModule,
-  MatToolbarModule, MatExpansionModule, MatIconModule, MatProgressSpinnerModule, MatPaginatorModule
+  MatToolbarModule, MatExpansionModule, MatIconModule, MatProgressSpinnerModule, MatPaginatorModule, MatDialogModule
 } from '@angular/material';
 import { CreatePostsTemplateDrivenComponent } from './posts/create-posts/create-posts-template.component';
 import { SignupComponent } from './auth/signup/signup.component';
 import { SigninComponent } from './auth/signin/signin.component';
 import { AuthInterceptor } from './auth/auth-interceptor';
+import { ErrorInterceptor } from './error-interceptor';
+import { ErrorComponent } from './shared/error/error.component';
 
 
 @NgModule({
@@ -31,7 +33,8 @@ import { AuthInterceptor } from './auth/auth-interceptor';
     PostListComponent,
     CreatePostsTemplateDrivenComponent,
     SigninComponent,
-    SignupComponent
+    SignupComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,
@@ -49,9 +52,16 @@ import { AuthInterceptor } from './auth/auth-interceptor';
     MatExpansionModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatDialogModule
   ],
-  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
-  bootstrap: [AppComponent]
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+  ],
+  bootstrap: [AppComponent],
+  entryComponents: [ // ?entryComponents-> have list of components which r generated/created dynamically
+    ErrorComponent
+  ]
 })
 export class AppModule { }

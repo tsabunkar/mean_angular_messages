@@ -22,16 +22,14 @@ export class AuthService {
   ) { }
 
   createUser(email: string, password: string) {
+
     const authData: AuthData = {
       email,
       password
     };
 
-    this._http.post('http://localhost:3000/api/users/signup', authData)
-      .subscribe(response => {
-        console.log(response);
-        this._router.navigate(['/']);
-      });
+    return this._http.post('http://localhost:3000/api/users/signup', authData);
+
   }
 
   signIn(email: string, password: string) {
@@ -64,7 +62,7 @@ export class AuthService {
 
 
 
-      });
+      }, );
   }
 
   // !setting timer of 1hour, so that if token expires we need to logout

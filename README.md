@@ -80,3 +80,18 @@ The real power of subjects comes into play with multicasting, where a subject is
 source- https://alligator.io/rxjs/subjects/
 
 ------------------------------------------------------------------------------------------------------
+tap() -> tap operator, it will allow us to do ceratin operation before Observable is done.
+
+------------------------------------------------------------------------------------------------------
+app.module.ts -
+
+entryComponents-> have list of components which r generated/created dynamically
+
+@NgModule({
+  ----
+  ----  
+entryComponents: [ 
+     ErrorComponent
+  ]
+})
+------------------------------------------------------------------------------------------------------
