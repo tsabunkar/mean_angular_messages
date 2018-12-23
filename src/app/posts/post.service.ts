@@ -14,7 +14,7 @@ export class PostService {
   private postUpdatedEvent = new Subject<{ posts: PostMessage[], totalRecordCount: number }>();
 
   constructor(private _http: HttpClient,
-    private _router: Router // used for navigation to other component
+    private _router: Router, // used for navigation to other component
   ) { }
 
   // !GETALL
