@@ -19,12 +19,12 @@ export class AuthInterceptor implements HttpInterceptor {
     } */
     // !ALternatively
     const token = this._authService.getToken();
-    console.log('token value from backend', token);
+    // console.log('token value from backend', token);
     const clonedRequest = req.clone({
-      headers: req.headers.append('authorization', 'Bearer ' + token) // Bearer<space>+token  -> Is industry followed
+      headers: req.headers.append('Authorization', 'Bearer ' + token) // Bearer<space>+token  -> Is industry followed
     });
-    console.log('keys', clonedRequest.headers.keys());
-    console.log('authorization', clonedRequest.headers.get('authorization'));
+    // console.log('keys', clonedRequest.headers.keys());
+    // console.log('authorization', clonedRequest.headers.get('Authorization'));
     return next.handle(clonedRequest);
   }
 

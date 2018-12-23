@@ -46,7 +46,8 @@ export class PostService {
                 title: posts.title,
                 id: posts._id, // mapping _id (of db) --to--> id property in frontend
                 content: posts.content,
-                imagePath: posts.imagePath
+                imagePath: posts.imagePath,
+                _creator: posts._creator
               };
 
             });
@@ -125,7 +126,13 @@ export class PostService {
          ...this.posts.find(post => post.id === idToFetchPost)
        }; // return clone object */
     // !instead of getting local posts array, we r fetching it from backend
-    return this._http.get<{ _id: string, title: string, content: string, imagePath: string }>
+    return this._http.get<{
+      _id: string;
+      title: string;
+      content: string;
+      imagePath: string;
+      _creator: string;
+    }>
       (`http://localhost:3000/api/posts/${idToFetchPost}`);
   }
 
@@ -142,7 +149,8 @@ export class PostService {
     } else { // image is string, then send json data
       postData = {
         ...post,
-        imagePath: image
+        imagePath: image,
+        _creator: null
       };
     }
 

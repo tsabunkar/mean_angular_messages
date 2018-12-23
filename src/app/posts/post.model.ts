@@ -4,5 +4,6 @@ export interface PostMessage {
   content: string;
   id?: string;
   imagePath: string;
+  _creator?: string;
 }
 

@@ -66,7 +66,8 @@ export class CreatePostsComponent implements OnInit {
                 id: postData['data']._id,
                 title: postData['data'].title,
                 content: postData['data'].content,
-                imagePath: postData['data'].imagePath
+                imagePath: postData['data'].imagePath,
+                _creator: postData['data']._creator,
               };
 
 

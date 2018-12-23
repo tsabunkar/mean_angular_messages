@@ -58,34 +58,36 @@ export class CreatePostsTemplateDrivenComponent implements OnInit {
 
   }
 
- /*  onAddEditPost(form: NgForm) {
-    if (form.invalid) {
-      return;
-    }
-    const post: PostMessage = {
-      title: form.value.titleName,
-      content: form.value.contentName
-    };
+  /*  onAddEditPost(form: NgForm) {
+     if (form.invalid) {
+       return;
+     }
+     const post: PostMessage = {
+       title: form.value.titleName,
+       content: form.value.contentName
+     };
 
-    // !Loading progress spinner
-    this.isProgressLoading = true;
+     // !Loading progress spinner
+     this.isProgressLoading = true;
 
-    if (this.mode === 'edit') { // edit mode
-      console.log('executing edit post-message');
-      post.id = this.idToUpdate;
-      this._postsService.editPostMessage(this.idToUpdate, post);
-    } else { // add mode
-      //  this.postCreated.emit(post);
-      console.log('executing add post-message');
-      post.id = '';
-      // !Communicating two component using inMemeoryService technqiue rather than @Input, @Output
-      // this._postsService.addPosts(post);
-    }
-
-
-    form.resetForm(); // clear the form filed value
-
-  } */
+     if (this.mode === 'edit') { // edit mode
+       console.log('executing edit post-message');
+       post.id = this.idToUpdate;
+       this._postsService.editPostMessage(this.idToUpdate, post);
+     } else { // add mode
+       //  this.postCreated.emit(post);
+       console.log('executing add post-message');
+       post.id = '';
+       // !Communicating two component using inMemeoryService technqiue rather than @Input, @Output
+       // this._postsService.addPosts(post);
+     }
 
 
+     form.resetForm(); // clear the form filed value
+
+   } */
+
+  onAddEditPost() {
+
+  }
 }

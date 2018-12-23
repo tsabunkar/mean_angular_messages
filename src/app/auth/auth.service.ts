@@ -7,7 +7,9 @@ import { Router } from '@angular/router';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  private _token;
+  private _token: string;
+  private _userObjId: string; // user Object Id value
+
   // private authStatusListener = new Subject<boolean>(); // this subject is used to-> push authentication inform which r interested
 
   // !using ReplySubject bcoz-> late subject subscriptions will miss out on the data that was emitted previously.
@@ -28,6 +30,7 @@ export class AuthService {
     this._http.post('http://localhost:3000/api/users/signup', authData)
       .subscribe(response => {
         console.log(response);
+        this._router.navigate(['/']);
       });
   }
 
@@ -40,16 +43,20 @@ export class AuthService {
     this._http.post<Response>('http://localhost:3000/api/users/login', authData, { observe: 'response' })
       .subscribe(response => {
 
+        const myTokenValue = response.headers.get('my-token');
+        const expiresInDuration = response.body['expiresIn'];
+
+        this._token = myTokenValue;
+
         // setting timer of 1hour, so that if token expires we need to logout
-        this.settingTimerToWatchTokenExpiry(response.body['expiresIn']);
+        this.settingTimerToWatchTokenExpiry(expiresInDuration);
 
-
-        this._token = response.headers.get('my-token');
+        this._userObjId = response.body['userIdSendFromServer'];
         this.authStatusListener.next(true);
 
         const now = new Date();
-        const expirationDate = new Date(now.getTime() + response.body['expiresIn'] * 1000);
-        this.saveAuthDataInLocalStorage(response.headers.get('my-token'), expirationDate);
+        const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
+        this.saveAuthDataInLocalStorage(myTokenValue, expirationDate, this._userObjId);
 
 
         // redirect to MyMessages page
@@ -71,6 +78,10 @@ export class AuthService {
     return this._token;
   }
 
+  getUserId(): string {
+    return this._userObjId;
+  }
+
   getAuthStatusListener(): Observable<boolean> {
     return this.authStatusListener.asObservable();
   }
@@ -78,6 +89,7 @@ export class AuthService {
   logout() {
     this._token = null;
     this.authStatusListener.next(false);
+    this._userObjId = null;
 
     clearTimeout(this.tokenTimer); // clears the token timer if we logout manually by clicking the logout btn
     // or automatically when token expires
@@ -88,15 +100,6 @@ export class AuthService {
     this._router.navigate(['/']);
   }
 
-  private saveAuthDataInLocalStorage(token: string, expirationDate: Date) {
-    localStorage.setItem('tokenKey', token);
-    localStorage.setItem('expirationKey', expirationDate.toISOString());
-  }
-
-  private clearAuthDataFromLocalStorage() {
-    localStorage.removeItem('tokenKey');
-    localStorage.removeItem('expirationKey');
-  }
 
   autoAuthenticateUserWhenPageReload() {
     const authInformation = this.getAuthDataFromLocalStorage();
@@ -111,6 +114,7 @@ export class AuthService {
 
     if (expiresIn > 0) { // user is authenticated, only if expiresIn > 0 , means time is in the future
       this._token = authInformation.token;
+      this._userObjId = authInformation.userObjectId;
       // expiresIn -> in sec, but we shld pass  -> settingTimerToWatchTokenExpiry() in millisec
       this.settingTimerToWatchTokenExpiry(expiresIn / 1000);
       this.authStatusListener.next(true);
@@ -118,15 +122,31 @@ export class AuthService {
 
   }
 
+
+
+  private saveAuthDataInLocalStorage(token: string, expirationDate: Date, userObjectId: string) {
+    localStorage.setItem('tokenKey', token);
+    localStorage.setItem('expirationKey', expirationDate.toISOString());
+    localStorage.setItem('userObjectId', userObjectId);
+  }
+
+  private clearAuthDataFromLocalStorage() {
+    localStorage.removeItem('tokenKey');
+    localStorage.removeItem('expirationKey');
+    localStorage.removeItem('userObjectId');
+  }
+
   private getAuthDataFromLocalStorage() {
     const token = localStorage.getItem('tokenKey');
     const expirationDate = localStorage.getItem('expirationKey');
+    const userObjectId = localStorage.getItem('userObjectId');
     if (!token || !expirationDate) { // if no values of these key exist in the local Storage then execute this if statement
       return;
     }
     return {
       token,
-      expirationDate: new Date(expirationDate)
+      expirationDate: new Date(expirationDate),
+      userObjectId: userObjectId
     };
   }
 

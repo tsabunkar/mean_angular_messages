@@ -22,6 +22,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   pageSizeOptions = [1, 2, 5, 10];
   currentPage = 1; // user is in first page when this component in initiated
   isUserAuthenticated: Observable<boolean>;
+  userId: string;
 
   constructor(private _postsService: PostService,
     private _authService: AuthService
@@ -46,8 +47,11 @@ export class PostListComponent implements OnInit, OnDestroy {
         }
       );
 
-    // check weather end user has token in its header (i.e - weather user has loggedin/signedin)
+    // !check weather end user has token in its header (i.e - weather user has loggedin/signedin)
     this.isUserAuthenticated = this._authService.getAuthStatusListener();
+
+    // !Fetching the userObjectId
+    this.userId = this._authService.getUserId();
   }
 
   onDelete(postId: string) {
