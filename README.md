@@ -59,3 +59,24 @@ npm install --save @angular/material @angular/cdk @angular/animations
 
 New Technique-
 ng add @angular/material
+
+
+------------------------------------------------------------------------------------------------------
+Subject-
+A subject in Rx is a special hybrid that can act as both an observable and an observer at the same time. This way, data can be pushed into a subject and the subject’s subscribers will in turn receive that pushed data.
+
+Note -  how subscriptions that arrive late are missing out on some of the data that’s been pushed into the subject. We’ll see how to manage that below with Behavior Subjects or Replay Subjects
+
+
+Replay Subjects-
+ate subject subscriptions will miss out on the data that was emitted previously. Replay subjects can help with that by keeping a buffer of previous values that will be emitted to new subscriptions.
+
+Behavior Subjects-
+Behavior subjects are similar to replay subjects, but will re-emit only the last emitted value, or a default value if no value has been previously emitted
+
+Multicasting-
+The real power of subjects comes into play with multicasting, where a subject is passed as the observer to an observable, which will mean that, when the observable emits, the data is multicasted to all of the subject’s subscriptions:
+
+source- https://alligator.io/rxjs/subjects/
+
+------------------------------------------------------------------------------------------------------

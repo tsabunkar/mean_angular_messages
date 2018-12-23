@@ -4,17 +4,19 @@ import { PostListComponent } from './posts/post-list/post-list.component';
 import { CreatePostsComponent } from './posts/create-posts/create-posts.component';
 import { SigninComponent } from './auth/signin/signin.component';
 import { SignupComponent } from './auth/signup/signup.component';
+import { AuthGuard } from './auth/auth.guard';
 
 const routes: Routes = [
   { path: '', component: PostListComponent },
-  { path: 'create', component: CreatePostsComponent },
-  { path: 'edit/:idToEdit', component: CreatePostsComponent },
+  { path: 'create', component: CreatePostsComponent, canActivate: [AuthGuard] }, // protecting create postMessage route
+  { path: 'edit/:idToEdit', component: CreatePostsComponent, canActivate: [AuthGuard] }, // protecting edit postMessage route
   { path: 'login', component: SigninComponent },
   { path: 'signup', component: SignupComponent },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [AuthGuard] // !Registeting the Auth-Gaurd
 })
 export class AppRoutingModule { }

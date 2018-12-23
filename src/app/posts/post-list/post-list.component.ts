@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { PostMessage } from '../post.model';
 import { PostService } from '../post.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { PageEvent } from '@angular/material';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-post-list',
@@ -20,8 +21,11 @@ export class PostListComponent implements OnInit, OnDestroy {
   itemsPerPage = 2; // how many items we want to show on a given page
   pageSizeOptions = [1, 2, 5, 10];
   currentPage = 1; // user is in first page when this component in initiated
+  isUserAuthenticated: Observable<boolean>;
 
-  constructor(public _postsService: PostService) { }
+  constructor(private _postsService: PostService,
+    private _authService: AuthService
+  ) { }
 
   ngOnInit() {
 
@@ -41,6 +45,9 @@ export class PostListComponent implements OnInit, OnDestroy {
           this.totalRecords = postsData.totalRecordCount;
         }
       );
+
+    // check weather end user has token in its header (i.e - weather user has loggedin/signedin)
+    this.isUserAuthenticated = this._authService.getAuthStatusListener();
   }
 
   onDelete(postId: string) {

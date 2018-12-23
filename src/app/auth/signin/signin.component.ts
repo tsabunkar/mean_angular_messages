@@ -21,6 +21,7 @@ export class SigninComponent implements OnInit {
     if (form.invalid) {
       return;
     }
+    this.isProgressLoading = true;
     this._authService.signIn(form.value.email, form.value.password);
   }
 }
