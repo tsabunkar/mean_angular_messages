@@ -4,6 +4,9 @@ import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
+
+const BACKEND_URL = environment.apiUrl + '/posts';
 
 // Regestring the service in the root level (i.e- AppModule). rather than providing in providers array
 // in app.module.ts as we used to do old techn
@@ -28,7 +31,7 @@ export class PostService {
     this._http
       // .get<{ message: string; posts: any; status: number }>(
       .get<Response>(
-        'http://localhost:3000/api/posts' + querParams, { observe: 'response' }
+        BACKEND_URL + querParams, { observe: 'response' }
       )
       .pipe(
         // !NOTE- below postData ->is value which we recieved from backend but we have wrapped the
@@ -74,7 +77,7 @@ export class PostService {
     postData.append('imageProp', image, postMess.title);
 
     this._http.post<{ message: string; posts: PostMessage; status: number, postIdCreatedByMongo: string, postObject: PostMessage }>(
-      'http://localhost:3000/api/posts', postData
+      BACKEND_URL, postData
     ).subscribe((respData) => {
       console.log(respData.message);
 
@@ -107,7 +110,7 @@ export class PostService {
   deletePost(postId: string) {
     console.log(postId);
     return this._http.delete(
-      `http://localhost:3000/api/posts/${postId}`
+      BACKEND_URL + `/${postId}`
     );
     /*  .subscribe(() => {
        console.log('Deleted');
@@ -133,7 +136,7 @@ export class PostService {
       imagePath: string;
       _creator: string;
     }>
-      (`http://localhost:3000/api/posts/${idToFetchPost}`);
+      (BACKEND_URL + `/${idToFetchPost}`);
   }
 
   // !UPDATE
@@ -156,7 +159,7 @@ export class PostService {
 
 
     // const postMessageObject: PostMessage = { id, title, content };
-    this._http.put(`http://localhost:3000/api/posts/${id}`, postData)
+    this._http.put(BACKEND_URL + `/${id}`, postData)
       .subscribe((response) => {
         console.log(response);
 

@@ -3,6 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { AuthData } from './auth.model';
 import { Subject, Observable, ReplaySubject } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
+
+
+const BACKEND_URL = environment.apiUrl + '/users';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -28,7 +32,7 @@ export class AuthService {
       password
     };
 
-    return this._http.post('http://localhost:3000/api/users/signup', authData);
+    return this._http.post(BACKEND_URL + '/signup', authData);
 
   }
 
@@ -38,7 +42,7 @@ export class AuthService {
       password
     };
 
-    this._http.post<Response>('http://localhost:3000/api/users/login', authData, { observe: 'response' })
+    this._http.post<Response>(BACKEND_URL + '/login', authData, { observe: 'response' })
       .subscribe(response => {
 
         const myTokenValue = response.headers.get('my-token');
@@ -62,7 +66,7 @@ export class AuthService {
 
 
 
-      }, );
+      });
   }
 
   // !setting timer of 1hour, so that if token expires we need to logout
